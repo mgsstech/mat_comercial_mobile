@@ -1,0 +1,592 @@
+﻿
+<style>
+:root{--bg:#07111f;--line:#22314f;--line-soft:#1a2741;--text:#ecf3ff;--muted:#8fa3c7;--brand:#39a0ff;--brand-2:#32d0a7;--warn:#ef9f27;--danger:#e25d5d;--ok:#37c88c;--shadow:0 18px 50px rgba(0,0,0,.26)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{font-family:system-ui,-apple-system,sans-serif;background:radial-gradient(circle at top,rgba(57,160,255,.14),transparent 30%),linear-gradient(180deg,var(--bg),#050c18 70%);color:var(--text);font-size:14px;min-height:100%}
+body{padding:0 0 calc(92px + env(safe-area-inset-bottom))}
+input[type=number],input[type=text]{background:rgba(7,15,30,.78);border:1px solid var(--line);border-radius:14px;color:var(--text);font-size:15px;font-family:'Courier New',monospace;padding:0 12px;height:48px;width:100%;outline:none;-webkit-appearance:none}
+input[type=number]:focus,input[type=text]:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(57,160,255,.12)}
+select{background:rgba(7,15,30,.78);border:1px solid var(--line);border-radius:14px;color:var(--text);font-size:14px;padding:0 12px;height:48px;width:100%;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+button{cursor:pointer;border:none;font-family:system-ui,sans-serif;font-weight:600;transition:transform .15s ease,opacity .15s ease;-webkit-tap-highlight-color:transparent}
+button:active{opacity:.8;transform:scale(.98)}
+#app{width:min(100%,520px);margin:0 auto;min-height:100vh;position:relative}
+.hdr{position:sticky;top:0;z-index:100;padding:16px 16px 12px;background:linear-gradient(180deg,rgba(7,17,31,.96),rgba(7,17,31,.9));backdrop-filter:blur(14px);border-bottom:1px solid rgba(143,163,199,.14)}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.logo{display:flex;align-items:center;gap:11px;min-width:0}.logo-icon{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 10px 24px rgba(57,160,255,.22)}
+.logo-copy{min-width:0}.logo-name{font-size:18px;font-weight:800;letter-spacing:-.02em}.logo-ver{font-size:11px;color:var(--muted);letter-spacing:.03em;margin-top:2px}
+.badge{font-size:11px;background:rgba(57,160,255,.12);border:1px solid rgba(57,160,255,.28);color:#8cc8ff;padding:6px 10px;border-radius:999px;font-weight:700;white-space:nowrap}
+.tab-scroll{position:sticky;top:76px;z-index:95;background:rgba(7,17,31,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(143,163,199,.1);overflow-x:auto;display:flex;padding:10px 14px;gap:8px;scrollbar-width:none}.tab-scroll::-webkit-scrollbar{display:none}
+.tab-pill{padding:10px 14px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid transparent;box-shadow:inset 0 0 0 1px rgba(143,163,199,.08)}.tab-pill.active{background:linear-gradient(135deg,var(--brand),#2f7cf0);color:#fff;box-shadow:none}
+.hero{padding:16px 14px 0}.hero-card{background:linear-gradient(160deg,rgba(19,33,59,.92),rgba(11,22,41,.94));border:1px solid rgba(143,163,199,.14);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+.hero-kicker{color:#8cc8ff;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.hero-title{font-size:24px;line-height:1.05;letter-spacing:-.04em;font-weight:800;margin-top:8px}.hero-desc{margin-top:10px;color:#b7c7e5;line-height:1.6;font-size:13px}.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.hero-chip{padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(143,163,199,.14);color:var(--text);font-size:11px}
+.content{padding:16px 14px 100px}.panel{background:linear-gradient(180deg,rgba(16,26,47,.96),rgba(10,18,33,.98));border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 12px 30px rgba(0,0,0,.18)}.panel-title{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.inp-wrap{margin-bottom:14px}.inp-label{font-size:12px;color:#b0c0de;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;gap:8px}.inp-row{display:flex;align-items:center;background:rgba(7,15,30,.78);border:1px solid var(--line);border-radius:14px;overflow:hidden;height:48px}.inp-row:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px rgba(57,160,255,.12)}
+.inp-pre,.inp-suf{padding:0 12px;font-size:12px;color:var(--muted);height:100%;display:flex;align-items:center;white-space:nowrap;flex-shrink:0}.inp-pre{border-right:1px solid var(--line-soft)}.inp-suf{border-left:1px solid var(--line-soft)}.inp-row input{background:transparent;border:none;outline:none;color:var(--text);font-size:15px;font-family:'Courier New',monospace;padding:0 12px;height:100%;flex:1;width:0;min-width:0}
+.row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(143,163,199,.08);gap:10px}.row-label{font-size:12px;color:#9fb0cd;flex:1;line-height:1.5}.row-val{font-size:14px;font-weight:700;font-family:'Courier New',monospace;flex-shrink:0;text-align:right}
+.bar-wrap{margin-top:12px}.bar-row{display:flex;justify-content:space-between;font-size:11px;color:#9fb0cd;margin-bottom:5px;gap:8px}.bar-track{height:8px;background:#091221;border-radius:99px;overflow:hidden}.bar-fill{height:100%;border-radius:99px;transition:width .4s ease}
+.stats-grid{display:grid;gap:10px;margin-top:12px}.stats-2{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-3{grid-template-columns:repeat(3,minmax(0,1fr))}.stat{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border-radius:16px;padding:14px;border:1px solid rgba(143,163,199,.1)}.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}.stat-val{font-size:20px;font-weight:800;font-family:'Courier New',monospace}.stat-sub{font-size:10px;color:#7f91b2;margin-top:4px;line-height:1.5}
+.alert,.tip{margin-top:10px;padding:12px 13px;border-radius:14px;font-size:12px;line-height:1.65}.tip{background:rgba(57,160,255,.08);border:1px solid rgba(57,160,255,.2);color:#8cc8ff}
+.edu{background:linear-gradient(180deg,rgba(16,26,47,.96),rgba(11,22,41,.96));border:1px solid rgba(239,159,39,.18);border-radius:18px;margin-bottom:14px;overflow:hidden}.edu-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;user-select:none;gap:10px}.edu-hdr-left{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--warn)}.edu-body-wrap{padding:0 16px 14px;display:none}.edu-body-wrap.open{display:block}.edu-formula{background:rgba(7,15,30,.82);border:1px solid rgba(143,163,199,.1);border-radius:12px;padding:11px 13px;font-family:'Courier New',monospace;font-size:11px;color:var(--text);margin-bottom:10px;text-align:center;line-height:1.7;word-break:break-word}.edu-text{font-size:12px;color:#aebfdd;line-height:1.8}.edu-text b{color:var(--text);font-weight:700}
+.toggle-btn{display:flex;background:rgba(7,15,30,.78);border:1px solid var(--line);border-radius:10px;overflow:hidden;height:34px}.toggle-opt{padding:0 14px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;border:none;background:transparent;transition:all .15s;height:100%}.toggle-opt.on{background:linear-gradient(135deg,var(--brand),#2f7cf0);color:#fff;border-radius:9px}
+.section-sep{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:16px 0 10px;display:flex;align-items:center;gap:8px}.section-sep::after{content:'';flex:1;height:1px;background:rgba(143,163,199,.12)}
+.tbl-wrap{overflow-x:auto;border-radius:16px;border:1px solid var(--line);background:rgba(10,18,33,.95)}.tbl-wrap table{width:100%;border-collapse:collapse;min-width:420px}.tbl-wrap th{padding:10px;font-size:10px;font-weight:800;color:var(--muted);text-align:left;text-transform:uppercase;letter-spacing:.08em;background:#0e1a30;white-space:nowrap}.tbl-wrap td{padding:8px 10px;border-top:1px solid rgba(143,163,199,.08)}.tbl-wrap input{height:34px;font-size:13px}
+.prod-stack{display:grid;gap:12px}.prod-card{background:linear-gradient(180deg,rgba(16,26,47,.96),rgba(11,22,41,.96));border:1px solid var(--line);border-radius:18px;padding:14px}.prod-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.prod-title{font-size:12px;color:#8cc8ff;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.prod-remove{background:rgba(226,93,93,.12);border:1px solid rgba(226,93,93,.28);color:#ff9898;border-radius:10px;padding:7px 10px;font-size:12px}.prod-grid{display:grid;gap:10px;grid-template-columns:1fr 1fr}.prod-foot{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-top:12px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;margin:0 auto;width:min(100%,520px);background:rgba(7,17,31,.96);backdrop-filter:blur(16px);border-top:1px solid rgba(143,163,199,.12);display:flex;z-index:100;padding:8px 8px calc(8px + env(safe-area-inset-bottom))}.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;font-size:10px;font-weight:700;color:var(--muted);border:none;background:transparent;gap:4px;min-width:0;border-radius:14px}.nav-item.active{color:#fff;background:rgba(57,160,255,.14)}.nav-item svg{width:20px;height:20px;flex-shrink:0}.nav-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center}
+@media (max-width:720px){.stats-3{grid-template-columns:1fr}.hero-title{font-size:22px}}
+@media (max-width:560px){.stats-2,.prod-grid,.prod-foot{grid-template-columns:1fr}.row{flex-direction:column}.row-val{text-align:left}.tab-scroll{top:76px}}
+</style>
+
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="logo">
+        <div class="logo-icon">◆</div>
+        <div class="logo-copy">
+          <div class="logo-name">Precifica</div>
+          <div class="logo-ver">MVP v2.1 • 8 módulos comerciais</div>
+        </div>
+      </div>
+      <div class="badge">Mobile</div>
+    </div>
+  </div>
+  <div class="tab-scroll" id="tabscroll"></div>
+  <div class="hero" id="hero"></div>
+  <div class="content" id="content"></div>
+  <nav class="bottom-nav" id="bottomnav"></nav>
+</div>
+<script>
+const Rf=(v,d=2)=>Number(v).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const M=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const P=v=>`${Rf(v)}%`;
+const REGIMES=[{label:'Simples Nacional',t:0.063},{label:'Lucro Presumido',t:0.1565},{label:'Lucro Real',t:0.2125}];
+
+const STATE={
+  margem:{pv:100,pc:60,ri:1},
+  desconto:{dpv:1000,dpc:600,ddesc:10,dqtd:10,dri:1,dMode:1},
+  mc:{mpv:42.25,mcmv:28.25,mfr:5.2,mout:6.4,mqtd:2959,mfix:35000},
+  roi:{rpv:5,rmcu:1,rvol:2400,rdesc:10,raum:50,rcusto:0,rMode:1},
+  payback:{pinv:5000,pvend:3000,pmarg:25,paum:35},
+  potencial:{pvat:125000,ppen:28,pprod:126},
+  negociacao:{nfpv:4.50,ncmv:2.89,nvpv:7.99,npromo:5.99,nperc:50},
+  projecao:{ri:1,produtos:[
+    {nome:'Produto A',preco:500,custo:280,qtd:50},
+    {nome:'Produto B',preco:1200,custo:600,qtd:20},
+    {nome:'Produto C',preco:250,custo:180,qtd:100},
+  ]}
+};
+
+const EDU_OPEN={};
+
+const MODULE_META=[
+  {kicker:'Módulo 1',title:'Margem e markup',desc:'Veja rapidamente se o preço protege sua margem antes de negociar.',chips:['Preço x custo','Imposto aplicado','Leitura instantânea']},
+  {kicker:'Módulo 2',title:'Desconto seguro',desc:'Simule queda de preço e descubra na hora o limite sem destruir resultado.',chips:['R$ ou %','Teto seguro','Lucro do lote']},
+  {kicker:'Módulo 3',title:'Margem de contribuição',desc:'Entenda o quanto sobra por venda para pagar fixos e sustentar o negócio.',chips:['Breakeven','Custos variáveis','Lucro final']},
+  {kicker:'Módulo 4',title:'ROI promocional',desc:'Valide se a ação gera retorno real antes de colocar dinheiro na mesa.',chips:['Volume incremental','ROI líquido','Custo da ação']},
+  {kicker:'Módulo 5',title:'Payback',desc:'Estime em quantos meses o investimento volta para o caixa.',chips:['Retorno mensal','Payback','ROI em 12 meses']},
+  {kicker:'Módulo 6',title:'Potencial do cliente',desc:'Enxergue o espaço de crescimento e o que ainda está ficando fora do mix.',chips:['Penetração','SKUs inativos','Perda mensal']},
+  {kicker:'Módulo 7',title:'Negociação promocional',desc:'Ache uma divisão de rebaixa que preserve margem para os dois lados.',chips:['Fornecedor x varejo','Rebaixa','Ponto de equilíbrio']},
+  {kicker:'Módulo 8',title:'Projeção de resultados',desc:'Monte um mix e acompanhe receita, lucro e margem consolidada no celular.',chips:['Múltiplos produtos','Resumo consolidado','Edição simplificada']},
+];
+function ensureViewport(){if(!document.querySelector('meta[name=\"viewport\"]')){const meta=document.createElement('meta');meta.name='viewport';meta.content='width=device-width,initial-scale=1,maximum-scale=1';document.head.appendChild(meta);}}
+function isCompact(){return window.innerWidth<=640;}
+function renderHero(){const meta=MODULE_META[currentTab];if(!g('hero')||!meta)return;g('hero').innerHTML=`<div class="hero-card"><div class="hero-kicker">${meta.kicker}</div><div class="hero-title">${meta.title}</div><div class="hero-desc">${meta.desc}</div><div class="hero-meta"><span class="hero-chip">${TABS.length} módulos comerciais</span><span class="hero-chip">${currentTab+1} de ${TABS.length}</span>${meta.chips.map(chip=>`<span class="hero-chip">${chip}</span>`).join('')}</div></div>`;}
+
+function g(id){return document.getElementById(id);}
+function v(id){return parseFloat(g(id)?.value)||0;}
+function sf(tab,id){const el=g(id);if(!el)return;STATE[tab][id]=el.type==='number'?(parseFloat(el.value)||0):el.value;}
+function bind(tab,ids,calc){ids.forEach(id=>{const el=g(id);if(!el)return;el.addEventListener('input',()=>{sf(tab,id);calc();});el.addEventListener('change',()=>{sf(tab,id);calc();});});}
+
+function inp(id,label,val,pre,suf,hint){
+  return `<div class="inp-wrap">
+    <div class="inp-label"><span>${label}</span>${hint?`<span style="font-size:10px;color:#5b5b8a">${hint}</span>`:''}</div>
+    <div class="inp-row">
+      ${pre?`<div class="inp-pre">${pre}</div>`:''}
+      <input type="number" id="${id}" value="${val}" inputmode="decimal">
+      ${suf?`<div class="inp-suf">${suf}</div>`:''}
+    </div>
+  </div>`;
+}
+function sel(id,label,idx){
+  return `<div class="inp-wrap">
+    <div class="inp-label"><span>${label}</span></div>
+    <div style="position:relative">
+      <select id="${id}">${REGIMES.map((r,i)=>`<option value="${i}"${i==idx?' selected':''}>${r.label} (${Rf(r.t*100)}%)</option>`).join('')}</select>
+      <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:#5b5b8a;font-size:12px">▾</div>
+    </div>
+  </div>`;
+}
+function panel(title,html,accent){
+  return `<div class="panel" style="border-color:${accent||'#1e1e35'}">
+    ${title?`<div class="panel-title" style="color:${accent||'#5b5b8a'}">${title}</div>`:''}${html}</div>`;
+}
+function row(label,val,color,muted){
+  return `<div class="row"><span class="row-label" style="color:${muted?'#5b5b8a':'#888'}">${label}</span><span class="row-val" style="color:${color||'#e8e8f0'}">${val}</span></div>`;
+}
+function bar(val,label,max){
+  max=max||100;const w=Math.min(Math.max(val,0),max)/max*100;
+  const c=val<0?'#E24B4A':val<10?'#EF9F27':val<25?'#1D9E75':'#185FA5';
+  return `<div class="bar-wrap"><div class="bar-row"><span>${label}</span><span style="color:${c};font-weight:700">${Rf(val)}%</span></div><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${c}"></div></div></div>`;
+}
+function stat(label,val,color,sub){
+  return `<div class="stat" style="border:1px solid ${color}33"><div class="stat-label">${label}</div><div class="stat-val" style="color:${color}">${val}</div>${sub?`<div class="stat-sub">${sub}</div>`:''}</div>`;
+}
+function alrt(msg,type){
+  const c=type==='ok'?'#1D9E75':type==='warn'?'#EF9F27':'#E24B4A';
+  return `<div class="alert" style="background:${c}11;border:1px solid ${c}44;color:${c}">${msg}</div>`;
+}
+function tip(msg){return `<div class="tip">💡 ${msg}</div>`;}
+function togHtml(id,opts,active,fn){
+  return `<div class="toggle-btn">${opts.map((o,i)=>`<button class="toggle-opt${i===active?' on':''}" onclick="${fn}(${i})">${o}</button>`).join('')}</div>`;
+}
+function eduBlock(key,title,formula,body){
+  const open=EDU_OPEN[key];
+  return `<div class="edu">
+    <div class="edu-hdr" onclick="toggleEdu('${key}')">
+      <div class="edu-hdr-left"><span>📘</span><span>${title}</span></div>
+      <span style="color:#5b5b8a;font-size:14px">${open?'▴':'▾'}</span>
+    </div>
+    <div class="edu-body-wrap${open?' open':''}" id="edu_${key}">
+      <div class="edu-formula">${formula}</div>
+      <div class="edu-text">${body}</div>
+    </div>
+  </div>`;
+}
+function toggleEdu(key){
+  EDU_OPEN[key]=!EDU_OPEN[key];
+  const el=g(`edu_${key}`);
+  if(el){el.classList.toggle('open',EDU_OPEN[key]);}
+  const hdrs=document.querySelectorAll('.edu-hdr');
+  hdrs.forEach(h=>{
+    if(h.onclick&&h.onclick.toString().includes(key)){
+      const arrow=h.querySelector('span:last-child');
+      if(arrow)arrow.textContent=EDU_OPEN[key]?'▴':'▾';
+    }
+  });
+}
+
+// ── NAV ──
+const NAV=[
+  {label:'Margem',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',tab:0},
+  {label:'Desconto',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="2"/><circle cx="15" cy="15" r="2"/><path d="M5 19L19 5"/></svg>',tab:1},
+  {label:'MC',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',tab:2},
+  {label:'ROI',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',tab:3},
+  {label:'Mais',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>',tab:-1},
+];
+
+const TABS=[
+  {label:'Margem & Markup',render:renderMargem},
+  {label:'Simulador Desconto',render:renderDesconto},
+  {label:'Margem Contribuição',render:renderMC},
+  {label:'ROI Promocional',render:renderROI},
+  {label:'Payback',render:renderPayback},
+  {label:'Potencial Cliente',render:renderPotencial},
+  {label:'Negociação Promocional',render:renderNegociacao},
+  {label:'Projeção de Resultados',render:renderProjecao},
+];
+
+let currentTab=0;
+let moreOpen=false;
+
+function renderNav(){
+  g('bottomnav').innerHTML=NAV.map(n=>`
+    <button class="nav-item${n.tab===currentTab||(n.tab===-1&&currentTab>=4)?' active':''}" onclick="${n.tab>=0?`switchTab(${n.tab})`:'toggleMore()'}">
+      ${n.icon}
+      <span class="nav-label">${n.label}</span>
+    </button>`).join('');
+  g('tabscroll').innerHTML=TABS.map((t,i)=>`<button class="tab-pill${i===currentTab?' active':''}" onclick="switchTab(${i})">${t.label}</button>`).join('');
+  renderHero();
+}
+
+function toggleMore(){
+  switchTab(currentTab<4?4:(currentTab+1)%TABS.length);
+}
+
+function switchTab(i){
+  currentTab=i;moreOpen=false;
+  renderNav();
+  TABS[i].render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── 1. MARGEM ──
+function renderMargem(){
+  const s=STATE.margem;
+  g('content').innerHTML=
+    eduBlock('margem','Como funciona — Margem & Markup',
+      'Margem = (PV − PC) ÷ PV\nMarkup = (PV − PC) ÷ PC',
+      `<b>PV</b> = Preço de Venda. <b>PC</b> = Preço de Custo.<br>O sistema desconta os impostos do regime escolhido para chegar na <b>margem real</b>.<br><br><b>Exemplo:</b> Comprou por R$60, vende por R$100 no Lucro Presumido → Margem real = 24,35%.`)+
+    panel('Dados do produto',
+      inp('pv','Preço de venda (PV)',s.pv,'R$')+
+      inp('pc','Custo do produto (PC)',s.pc,'R$')+
+      sel('ri','Regime tributário',s.ri))+
+    `<div id="res_margem"></div>`;
+  bind('margem',['pv','pc','ri'],calcMargem);
+  calcMargem();
+}
+function calcMargem(){
+  sf('margem','pv');sf('margem','pc');sf('margem','ri');
+  const pv=v('pv'),pc=v('pc'),ri=parseInt(g('ri')?.value||1);
+  const reg=REGIMES[ri],imp=pv*reg.t,lucro=pv-pc-imp;
+  const margem=pv>0?(lucro/pv)*100:0,markup=pc>0?((pv-pc)/pc)*100:0,pmin=pc>0?pc/(1-reg.t):0;
+  g('res_margem').innerHTML=
+    panel('Resultado',
+      row('Preço de venda',M(pv),'#e8e8f0',true)+
+      row(`Impostos (${Rf(reg.t*100)}%)`,`− ${M(imp)}`,'#E24B4A',true)+
+      row('Custo (PC)',`− ${M(pc)}`,'#E24B4A',true)+
+      row('Lucro líquido',M(lucro),lucro>=0?'#1D9E75':'#E24B4A')+
+      bar(margem,'Margem real')+bar(markup,'Markup',200)
+    ,lucro>=0?'#1D9E75':'#E24B4A')+
+    `<div class="stats-grid stats-2">
+      ${stat('Preço mínimo viável',M(pmin),'#EF9F27','Abaixo = prejuízo')}
+      ${stat('Markup',P(markup),'#7F77DD','% sobre o custo')}
+    </div>`+
+    (lucro<0?alrt(`Prejuízo de ${M(Math.abs(lucro))} por unidade`,'danger'):'')+
+    (lucro>=0&&margem<10?alrt('Margem abaixo de 10% — risco alto','warn'):'');
+}
+
+// ── 2. DESCONTO ──
+function renderDesconto(){
+  g('content').innerHTML=
+    eduBlock('desconto','Como funciona — Simulador de Desconto',
+      'Preço final = PV × (1 − desconto)\nTeto seguro = margem máx. antes dos impostos',
+      `Informe preço, custo e desconto. O sistema mostra a margem real após o desconto e os impostos.<br>Use o toggle <b>R$ / %</b> para o formato que preferir.<br><br><b>Exemplo:</b> Produto a R$1.000, custo R$600, desconto 10% → preço final R$900. Verifique se ainda há margem.`)+
+    `<div id="desc_form"></div><div id="res_desc"></div>`;
+  buildDescontoForm();
+}
+function buildDescontoForm(){
+  const s=STATE.desconto;
+  g('desc_form').innerHTML=panel('Parâmetros',
+    inp('dpv','Preço de tabela',s.dpv,'R$')+
+    inp('dpc','Custo do produto',s.dpc,'R$')+
+    `<div class="inp-wrap">
+      <div class="inp-label"><span>Desconto</span>${togHtml('dtog',['R$','%'],s.dMode,'setDMode')}</div>
+      <div class="inp-row"><div class="inp-pre">${s.dMode===0?'R$':'%'}</div><input type="number" id="ddesc" value="${s.ddesc}" inputmode="decimal"></div>
+    </div>`+
+    inp('dqtd','Quantidade',s.dqtd,'','un')+
+    sel('dri','Regime tributário',s.dri));
+  bind('desconto',['dpv','dpc','ddesc','dqtd','dri'],calcDesconto);
+  calcDesconto();
+}
+function setDMode(m){STATE.desconto.dMode=m;buildDescontoForm();}
+function calcDesconto(){
+  ['dpv','dpc','ddesc','dqtd','dri'].forEach(id=>sf('desconto',id));
+  const s=STATE.desconto,pv=v('dpv'),pc=v('dpc'),qtd=v('dqtd'),ri=parseInt(g('dri')?.value||s.dri);
+  const dv=s.dMode===0?v('ddesc'):(pv*v('ddesc')/100),dp=pv>0?(dv/pv)*100:0;
+  const reg=REGIMES[ri],pvF=pv-dv,imp=pvF*reg.t,lu=pvF-pc-imp;
+  const mg=pvF>0?(lu/pvF)*100:0,mgS=pv>0?((pv-pc-pv*reg.t)/pv)*100:0;
+  const lim=((1-reg.t)-pc/pv)*100;
+  g('res_desc').innerHTML=
+    panel('Impacto do desconto',
+      row('Preço de tabela',M(pv),'#e8e8f0',true)+
+      row(`Desconto (${Rf(dp)}%)`,`− ${M(dv)}`,'#E24B4A')+
+      row('Preço final',M(Math.max(pvF,0)))+
+      row('Lucro unitário',M(lu),lu>=0?'#1D9E75':'#E24B4A')+
+      bar(mgS,'Margem sem desconto')+bar(mg,'Margem com desconto')+
+      (mgS-mg>0?`<div style="margin-top:8px;padding:8px 12px;background:#13131f;border-radius:8px;font-size:12px;color:#888">Desconto consumiu <span style="color:#EF9F27;font-weight:700">${Rf(mgS-mg)} p.p.</span> da margem</div>`:'')+
+      `<div style="margin-top:10px">${stat('Teto seguro',P(lim),'#185FA5','Máximo sem prejuízo')}</div>`
+    ,'#EF9F27')+
+    `<div class="stats-grid stats-2">
+      ${stat('Lucro total lote',M(lu*qtd),lu>=0?'#1D9E75':'#E24B4A')}
+      ${stat('Receita total',M(Math.max(pvF,0)*qtd),'#185FA5')}
+    </div>`+
+    (dp>lim?alrt(`Desconto acima do teto (${Rf(lim)}%) — prejuízo por unidade`,'danger'):'');
+}
+
+// ── 3. MC ──
+function renderMC(){
+  const s=STATE.mc;
+  g('content').innerHTML=
+    eduBlock('mc','Como funciona — Margem de Contribuição',
+      'MC = PV − CMV − Frete% − Outras%\nLucro = MC total − Custos Fixos',
+      `A MC é o que sobra de cada venda após os custos variáveis.<br><b>Frete e Outras variáveis</b> são em % do preço de venda.<br><br><b>Exemplo:</b> Frete 5% sobre R$42,25 = R$2,11 por unidade. O breakeven mostra quantas unidades cobrem os custos fixos.`)+
+    panel('Variáveis',
+      inp('mpv','Preço de venda',s.mpv,'R$')+
+      inp('mcmv','CMV — Custo da mercadoria',s.mcmv,'R$','','Valor pago pelo produto')+
+      inp('mfr','Frete / logística',s.mfr,'','% do PV')+
+      inp('mout','Outras variáveis (comissão, etc.)',s.mout,'','% do PV')+
+      inp('mqtd','Quantidade vendida no período',s.mqtd,'','un')+
+      inp('mfix','Custos fixos totais (mês)',s.mfix,'R$','','Aluguel, equipe...'))+
+    `<div id="res_mc"></div>`;
+  bind('mc',['mpv','mcmv','mfr','mout','mqtd','mfix'],calcMC);
+  calcMC();
+}
+function calcMC(){
+  ['mpv','mcmv','mfr','mout','mqtd','mfix'].forEach(id=>sf('mc',id));
+  const pv=v('mpv'),cmv=v('mcmv'),frP=v('mfr'),ouP=v('mout'),qtd=v('mqtd'),fix=v('mfix');
+  const frV=pv*frP/100,ouV=pv*ouP/100,mcU=pv-cmv-frV-ouV,mcTT=mcU*qtd,lucro=mcTT-fix;
+  const mg=pv>0?(mcU/pv)*100:0,be=mcU>0?fix/mcU:Infinity;
+  g('res_mc').innerHTML=
+    panel('Margem de contribuição',
+      row('Preço de venda',M(pv))+
+      row('− CMV',M(cmv),'#E24B4A',true)+
+      row(`− Frete (${Rf(frP)}% = ${M(frV)})`,M(frV),'#E24B4A',true)+
+      row(`− Outras (${Rf(ouP)}% = ${M(ouV)})`,M(ouV),'#E24B4A',true)+
+      row('MC unitária',M(mcU),mcU>=0?'#1D9E75':'#E24B4A')+
+      row(`MC total (${Rf(qtd,0)} un)`,M(mcTT),mcU>=0?'#1D9E75':'#E24B4A')+
+      row('− Custos fixos',`− ${M(fix)}`,'#E24B4A',true)+
+      row('Lucro final',M(lucro),lucro>=0?'#1D9E75':'#E24B4A')+
+      bar(mg,'Margem de contribuição %')
+    ,'#7F77DD')+
+    `<div class="stats-grid stats-2">
+      ${stat('MC unitária',M(mcU),mcU>=0?'#1D9E75':'#E24B4A','Por unidade vendida')}
+      ${stat('Breakeven',mcU>0?`${Rf(be,0)} un`:'∞','#EF9F27',mcU>0?'Mínimo para cobrir fixos':'MC negativa')}
+    </div>`+
+    (mcU<0?alrt('MC negativa — quanto mais vende, mais perde.','danger'):'')+
+    (mcU>0&&lucro<0?alrt(`Precisa vender ${Rf(be,0)} un para cobrir os fixos.`,'warn'):'');
+}
+
+// ── 4. ROI ──
+function renderROI(){
+  g('content').innerHTML=
+    eduBlock('roi','Como funciona — ROI Promocional',
+      'ROI = (MC incremental − Custo) ÷ Custo',
+      `Antes de aceitar uma proposta, calcule se ela gera retorno real.<br>O cálculo é feito sobre o <b>volume incremental</b> — as vendas a mais que a ação vai gerar.<br><br><b>Exemplo:</b> 10% desconto + 50% mais volume com MC de R$1. Se a MC incremental não cobrir o desconto, o ROI é negativo.`)+
+    `<div id="roi_form"></div><div id="res_roi"></div>`;
+  buildROIForm();
+}
+function buildROIForm(){
+  const s=STATE.roi;
+  g('roi_form').innerHTML=panel('Parâmetros da ação',
+    inp('rpv','Preço atual de venda',s.rpv,'R$')+
+    inp('rmcu','MC unitária atual',s.rmcu,'R$','','Preço − todos os custos variáveis')+
+    inp('rvol','Volume mensal atual',s.rvol,'','un')+
+    `<div class="inp-wrap">
+      <div class="inp-label"><span>Desconto da promoção</span>${togHtml('rtog',['R$','%'],s.rMode,'setRMode')}</div>
+      <div class="inp-row"><div class="inp-pre">${s.rMode===0?'R$':'%'}</div><input type="number" id="rdesc" value="${s.rdesc}" inputmode="decimal"></div>
+    </div>`+
+    inp('raum','Aumento de volume esperado',s.raum,'','%')+
+    inp('rcusto','Custo adicional da ação',s.rcusto,'R$','','Display, brinde...'));
+  bind('roi',['rpv','rmcu','rvol','rdesc','raum','rcusto'],calcROI);
+  calcROI();
+}
+function setRMode(m){STATE.roi.rMode=m;buildROIForm();}
+function calcROI(){
+  ['rpv','rmcu','rvol','rdesc','raum','rcusto'].forEach(id=>sf('roi',id));
+  const s=STATE.roi,pv=v('rpv'),mcU=v('rmcu'),vol=v('rvol'),aum=v('raum'),custo=v('rcusto');
+  const dv=s.rMode===0?v('rdesc'):(pv*v('rdesc')/100);
+  const mcUP=mcU-dv,volP=vol*(1+aum/100),diff=(mcUP*volP)-(mcU*vol),res=diff-custo;
+  const roi=custo>0?((diff-custo)/custo)*100:null;
+  g('res_roi').innerHTML=
+    panel('Análise do ROI',
+      row('Volume atual',`${Rf(vol,0)} un`,null,true)+
+      row(`Volume com promo`,`${Rf(volP,0)} un`)+
+      row('Volume incremental',`+${Rf(volP-vol,0)} un`,'#185FA5')+
+      row('Variação de MC',M(diff),diff>=0?'#1D9E75':'#E24B4A')+
+      (custo>0?row('− Custo da ação',`− ${M(custo)}`,'#E24B4A'):'')
+    ,res>=0?'#1D9E75':'#E24B4A')+
+    `<div class="stats-grid stats-2">
+      ${stat('Resultado líquido',M(res),res>=0?'#1D9E75':'#E24B4A','MC incr. − custo')}
+      ${stat('ROI',roi!==null?P(roi):res>=0?'Positivo':'Negativo',res>=0?'#1D9E75':'#E24B4A')}
+    </div>`+
+    (res<0?alrt(`Ação destrói margem — perde ${M(Math.abs(res))}`,'danger'):'')+
+    (res===0?alrt('Resultado zero — empata sem retorno','warn'):'')+
+    (res>0?alrt(`Ação rentável — gera ${M(res)} de MC incremental`,'ok'):'');
+}
+
+// ── 5. PAYBACK ──
+function renderPayback(){
+  const s=STATE.payback;
+  g('content').innerHTML=
+    eduBlock('payback','Como funciona — Payback',
+      'Payback (meses) = Custo ÷ MC incremental por mês',
+      `Use para avaliar investimentos em PDV, gôndola, display, promotor.<br><br><b>Exemplo:</b> Investimento R$5.000, MC incremental R$263/mês → Payback em 19 meses.`)+
+    panel('Investimento',
+      inp('pinv','Custo do investimento',s.pinv,'R$','','Gôndola, display, PDV...')+
+      inp('pvend','Venda mensal atual',s.pvend,'R$')+
+      inp('pmarg','Margem de contribuição',s.pmarg,'','%')+
+      inp('paum','Aumento de vendas esperado',s.paum,'','%'))+
+    `<div id="res_pay"></div>`;
+  bind('payback',['pinv','pvend','pmarg','paum'],calcPayback);
+  calcPayback();
+}
+function calcPayback(){
+  ['pinv','pvend','pmarg','paum'].forEach(id=>sf('payback',id));
+  const inv=v('pinv'),vend=v('pvend'),marg=v('pmarg'),aum=v('paum');
+  const mcB=vend*(marg/100),vendP=vend*(1+aum/100),mcI=vendP*(marg/100)-mcB;
+  const pb=mcI>0?inv/mcI:Infinity,roi12=mcI>0?((mcI*12-inv)/inv)*100:-100;
+  let meses='';
+  for(let m=1;m<=12;m++){
+    const ac=mcI*m-inv,w=Math.min(Math.max((mcI*m/inv)*100,0),100),c=ac>=0?'#1D9E75':'#EF9F27';
+    meses+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+      <span style="font-size:11px;color:#5b5b8a;width:22px;flex-shrink:0">M${m}</span>
+      <div style="flex:1;height:5px;background:#1e1e35;border-radius:99px;overflow:hidden"><div style="height:100%;width:${w}%;background:${c};border-radius:99px"></div></div>
+      <span style="font-size:11px;font-family:'Courier New',monospace;color:${ac>=0?'#1D9E75':'#888'};width:85px;text-align:right;flex-shrink:0">${M(ac)}</span>
+    </div>`;
+  }
+  g('res_pay').innerHTML=
+    panel('Resultado',
+      row('MC base/mês',M(mcB),null,true)+row('MC com investimento',M(mcB+mcI))+row('MC incremental/mês',M(mcI),'#1D9E75')
+    ,'#1D9E75')+
+    `<div class="stats-grid stats-2" style="margin-bottom:14px">
+      ${stat('Payback',mcI>0?`${Rf(pb,1)} meses`:'∞',pb<=12?'#1D9E75':'#EF9F27',pb<=12?'Retorno no ano':'Acima de 12 meses')}
+      ${stat('ROI 12 meses',P(roi12),roi12>=0?'#1D9E75':'#E24B4A')}
+    </div>
+    <div style="background:#13131f;border-radius:12px;padding:14px">
+      <div style="font-size:10px;color:#5b5b8a;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Acumulado mês a mês</div>
+      ${meses}
+    </div>`;
+}
+
+// ── 6. POTENCIAL ──
+function renderPotencial(){
+  const s=STATE.potencial;
+  g('content').innerHTML=
+    eduBlock('potencial','Como funciona — Potencial de Cliente',
+      'Potencial total = Venda atual ÷ (Penetração ÷ 100)',
+      `Descubra quanto você está deixando de ganhar com cada cliente.<br><br><b>Exemplo:</b> Cliente compra R$125.000/mês e usa 28% do portfólio. Potencial real = R$446.000. Perda mensal = R$321.000.`)+
+    panel('Dados do cliente',
+      inp('pvat','Venda mensal atual',s.pvat,'R$')+
+      inp('ppen','% do portfólio que ele compra',s.ppen,'','%','Ex: 28 = 28% dos seus SKUs')+
+      inp('pprod','Total de SKUs no portfólio',s.pprod,'','SKUs'))+
+    `<div id="res_pot"></div>`;
+  bind('potencial',['pvat','ppen','pprod'],calcPotencial);
+  calcPotencial();
+}
+function calcPotencial(){
+  ['pvat','ppen','pprod'].forEach(id=>sf('potencial',id));
+  const vat=v('pvat'),pen=v('ppen'),prod=v('pprod');
+  const pot=pen>0?vat/(pen/100):0,perd=pot-vat;
+  const atv=Math.round(prod*pen/100),inat=prod-atv;
+  g('res_pot').innerHTML=
+    panel('Potencial oculto',
+      row('Venda atual',M(vat),null,true)+
+      row(`SKUs ativos (${Rf(pen)}%)`,`${atv} de ${prod}`)+
+      row('Potencial total estimado',M(pot),'#185FA5')+
+      row('Deixando de ganhar/mês',M(perd),'#E24B4A')+
+      row('SKUs inativos',`${inat} produtos`,'#EF9F27')
+    ,'#EF9F27')+
+    `<div class="stats-grid stats-3">
+      ${stat('Perda/mês',M(perd),'#E24B4A','')}
+      ${stat('Perda/ano',M(perd*12),'#E24B4A','')}
+      ${stat('Inativos',`${inat}`,'#EF9F27','SKUs')}
+    </div>`+
+    (pen<30?alrt(`${inat} SKUs nunca vendidos para este cliente`,'danger'):'');
+}
+
+// ── 7. NEGOCIAÇÃO ──
+function renderNegociacao(){
+  const s=STATE.negociacao;
+  g('content').innerHTML=
+    eduBlock('neg','Como funciona — Negociação Promocional',
+      'Rebaixa = PV normal − PV promo\nDivisão entre fornecedor e varejo',
+      `Simule quem paga a rebaixa de uma promoção e o impacto na margem de cada parte.<br><br><b>Exemplo:</b> Rebaixa de R$2,00 dividida 50/50 — verifique se ambos mantêm margem positiva.`)+
+    panel('Cenário',
+      inp('nfpv','Seu preço para o varejo',s.nfpv,'R$')+
+      inp('ncmv','Seu CMV',s.ncmv,'R$')+
+      inp('nvpv','Preço do varejo ao consumidor',s.nvpv,'R$')+
+      inp('npromo','Preço promocional desejado',s.npromo,'R$')+
+      inp('nperc','% da rebaixa que você paga',s.nperc,'','%','0% = varejo paga · 100% = você paga'))+
+    `<div id="res_neg"></div>`;
+  bind('negociacao',['nfpv','ncmv','nvpv','npromo','nperc'],calcNeg);
+  calcNeg();
+}
+function calcNeg(){
+  ['nfpv','ncmv','nvpv','npromo','nperc'].forEach(id=>sf('negociacao',id));
+  const fpv=v('nfpv'),cmv=v('ncmv'),vpv=v('nvpv'),promo=v('npromo'),perc=v('nperc');
+  const lf=fpv-cmv,mf=fpv>0?(lf/fpv)*100:0,lv=vpv-fpv,mv=vpv>0?(lv/vpv)*100:0;
+  const reb=vpv-promo,pF=reb*(perc/100),pV=reb-pF;
+  const nlF=lf-pF,nmF=fpv>0?(nlF/fpv)*100:0,nlV=promo-fpv+pF,nmV=promo>0?(nlV/promo)*100:0;
+  g('res_neg').innerHTML=
+    `<div class="section-sep">Situação atual</div>
+    <div class="stats-grid stats-2">
+      <div class="stat" style="border:1px solid #1D9E75aa">
+        <div class="stat-label">Você — fornecedor</div>
+        <div style="font-size:13px;color:#888;margin-top:4px">Lucro: <span style="color:#1D9E75;font-weight:700">${M(lf)}</span></div>
+        <div style="font-size:13px;color:#888">Margem: <span style="color:#1D9E75;font-weight:700">${P(mf)}</span></div>
+      </div>
+      <div class="stat" style="border:1px solid #185FA5aa">
+        <div class="stat-label">Varejo</div>
+        <div style="font-size:13px;color:#888;margin-top:4px">Lucro: <span style="color:#185FA5;font-weight:700">${M(lv)}</span></div>
+        <div style="font-size:13px;color:#888">Margem: <span style="color:#185FA5;font-weight:700">${P(mv)}</span></div>
+      </div>
+    </div>`+
+    panel('Divisão da rebaixa',
+      row('Rebaixa total',M(reb),'#EF9F27')+
+      row(`Você paga (${Rf(perc)}%)`,M(pF),'#E24B4A')+
+      row(`Varejo paga (${Rf(100-perc)}%)`,M(pV),'#E24B4A')
+    ,'#7F77DD')+
+    `<div class="section-sep">Com a promoção</div>
+    <div class="stats-grid stats-2">
+      <div class="stat" style="border:1px solid ${nlF>=0?'#1D9E75':'#E24B4A'}aa">
+        <div class="stat-label">Você — fornecedor</div>
+        <div style="font-size:13px;color:#888;margin-top:4px">Lucro: <span style="color:${nlF>=0?'#1D9E75':'#E24B4A'};font-weight:700">${M(nlF)}</span></div>
+        <div style="font-size:13px;color:#888">Margem: <span style="color:${nlF>=0?'#1D9E75':'#E24B4A'};font-weight:700">${P(nmF)}</span></div>
+      </div>
+      <div class="stat" style="border:1px solid ${nlV>=0?'#185FA5':'#E24B4A'}aa">
+        <div class="stat-label">Varejo</div>
+        <div style="font-size:13px;color:#888;margin-top:4px">Lucro: <span style="color:${nlV>=0?'#185FA5':'#E24B4A'};font-weight:700">${M(nlV)}</span></div>
+        <div style="font-size:13px;color:#888">Margem: <span style="color:${nlV>=0?'#185FA5':'#E24B4A'};font-weight:700">${P(nmV)}</span></div>
+      </div>
+    </div>`+
+    (nlF<0?alrt('Você fica no prejuízo. Reduza o % que paga.','danger'):'')+
+    (nlV<0?alrt('Varejo fica no prejuízo. A promoção provavelmente não será aceita.','warn'):'')+
+    tip('Ajuste o % para encontrar uma divisão em que ambos mantenham margem positiva.');
+}
+
+// ── 8. PROJEÇÃO ──
+function renderProjecao(){
+  const s=STATE.projecao;
+  g('content').innerHTML=
+    eduBlock('proj','Como funciona — Projeção de Resultados',
+      'Lucro = (PV − PC − Impostos) × Qtd\nMargem cons. = Lucro total ÷ Receita total',
+      `Simule múltiplos produtos e veja o resultado consolidado. Edite diretamente na tabela.<br><br><b>Exemplo:</b> Mix de 3 produtos — o sistema mostra receita, lucro e margem média da operação.`)+
+    `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="position:relative;flex:1;margin-right:10px">
+        <select id="prori">${REGIMES.map((r,i)=>`<option value="${i}"${i==s.ri?' selected':''}>${r.label}</option>`).join('')}</select>
+        <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:#5b5b8a;font-size:12px">▾</div>
+      </div>
+      <button onclick="addProd()" style="background:#185FA5;color:#fff;border-radius:10px;padding:0 16px;height:44px;font-size:13px;flex-shrink:0">+ Produto</button>
+    </div>
+    <div id="prod_table"></div>
+    <div id="pro_stats" class="stats-grid stats-3" style="margin-top:12px"></div>`;
+  g('prori').addEventListener('change',e=>{STATE.projecao.ri=parseInt(e.target.value);renderProdTable();});
+  renderProdTable();
+}
+function renderProdTable(){
+  const s=STATE.projecao,reg=REGIMES[s.ri];
+  let rows='';let cards='';let totR=0,totL=0;
+  s.produtos.forEach((p,i)=>{
+    const imp=p.preco*reg.t,lu=p.preco-p.custo-imp,rec=p.preco*p.qtd,luc=lu*p.qtd,mg=p.preco>0?(lu/p.preco)*100:0;
+    totR+=rec;totL+=luc;
+    const mc=mg<0?'#E24B4A':mg<10?'#EF9F27':'#1D9E75';
+    rows+=`<tr>
+      <td><input type="text" value="${p.nome}" onchange="updProd(${i},'nome',this.value)" style="width:80px"></td>
+      <td><input type="number" value="${p.preco}" onchange="updProd(${i},'preco',this.value)" style="width:70px" inputmode="decimal"></td>
+      <td><input type="number" value="${p.custo}" onchange="updProd(${i},'custo',this.value)" style="width:70px" inputmode="decimal"></td>
+      <td><input type="number" value="${p.qtd}" onchange="updProd(${i},'qtd',this.value)" style="width:55px" inputmode="decimal"></td>
+      <td style="font-family:'Courier New',monospace;font-size:12px;color:#888;white-space:nowrap">${M(luc)}</td>
+      <td><span style="font-size:12px;font-weight:700;color:${mc}">${Rf(mg)}%</span></td>
+      <td><button onclick="remProd(${i})" style="background:none;color:#5b5b8a;font-size:16px;padding:0 4px;height:auto;line-height:1">×</button></td>
+    </tr>`;
+    cards+=`<div class="prod-card">
+      <div class="prod-head">
+        <div class="prod-title">${p.nome || `Produto ${i+1}`}</div>
+        <button class="prod-remove" onclick="remProd(${i})">Remover</button>
+      </div>
+      <div class="prod-grid">
+        <div class="inp-wrap"><div class="inp-label"><span>Nome</span></div><input type="text" value="${p.nome}" onchange="updProd(${i},'nome',this.value)"></div>
+        <div class="inp-wrap"><div class="inp-label"><span>Preço</span></div><input type="number" value="${p.preco}" onchange="updProd(${i},'preco',this.value)" inputmode="decimal"></div>
+        <div class="inp-wrap"><div class="inp-label"><span>Custo</span></div><input type="number" value="${p.custo}" onchange="updProd(${i},'custo',this.value)" inputmode="decimal"></div>
+        <div class="inp-wrap"><div class="inp-label"><span>Quantidade</span></div><input type="number" value="${p.qtd}" onchange="updProd(${i},'qtd',this.value)" inputmode="decimal"></div>
+      </div>
+      <div class="prod-foot">
+        ${stat('Lucro',M(luc),luc>=0?'#1D9E75':'#E24B4A')}
+        ${stat('Margem',P(mg),mc)}
+      </div>
+    </div>`;
+  });
+  const mg=totR>0?(totL/totR)*100:0;
+  g('prod_table').innerHTML=isCompact()?`<div class="prod-stack">${cards}</div>`:`<div class="tbl-wrap"><table><thead><tr><th>Produto</th><th>Preço</th><th>Custo</th><th>Qtd</th><th>Lucro</th><th>Mg%</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  g('pro_stats').innerHTML=stat('Receita',M(totR),'#185FA5')+stat('Lucro',M(totL),totL>=0?'#1D9E75':'#E24B4A')+stat('Margem',P(mg),mg<10?'#EF9F27':'#1D9E75');
+}
+function addProd(){STATE.projecao.produtos.push({nome:`Prod ${STATE.projecao.produtos.length+1}`,preco:300,custo:150,qtd:30});renderProdTable();}
+function remProd(i){STATE.projecao.produtos.splice(i,1);renderProdTable();}
+function updProd(i,f,val){STATE.projecao.produtos[i][f]=f==='nome'?val:parseFloat(val)||0;renderProdTable();}
+
+ensureViewport();
+renderNav();
+TABS[0].render();
+window.addEventListener('resize',()=>{if(currentTab===7){renderProdTable();}renderNav();});
+</script>
+
+
